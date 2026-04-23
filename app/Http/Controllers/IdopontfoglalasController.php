@@ -137,15 +137,12 @@ class IdopontfoglalasController extends Controller
             $slotStart = $current->format('H:i');
             $slotEnd = $current->copy()->addMinutes($idotartam)->format('H:i');
 
-            // ütközés ellenőrzése
             $utkozik = false;
 
             foreach ($foglalasok as $f) {
-                // H:i formátumra hozzuk az adatbázis adatot
                 $fKezdes = substr($f->ido_kezdes, 0, 5); 
                 $fVege = substr($f->ido_vege, 0, 5);
 
-                // SZABVÁNYOS ÁTFEDÉS VIZSGÁLAT: Akkor van átfedés, ha az 1. vége később van mint a 2. eleje, ÉS az 1. eleje korábban van mint a 2. vége.
                 if ($slotStart < $fVege && $slotEnd > $fKezdes) {
                     $utkozik = true;
                     break;
@@ -156,7 +153,7 @@ class IdopontfoglalasController extends Controller
                 $freeTimes[] = $slotStart;
             }
 
-            $current->addMinutes(30); // 30 perces lépésköz
+            $current->addMinutes(30);
         }
 
         return response()->json(['idopontok' => $freeTimes]);

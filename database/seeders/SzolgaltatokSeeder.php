@@ -23,41 +23,6 @@ class SzolgaltatokSeeder extends Seeder
                 'dolgozo_id' => 2,
                 'lehetosegek_id' => 1,
             ],
-            
-            [
-                'dolgozo_id' => 2,
-                'lehetosegek_id' => 6,
-            ],
-
-            [
-                'dolgozo_id' => 3,
-                'lehetosegek_id' => 3,
-            ],
-            
-            [
-                'dolgozo_id' => 4,
-                'lehetosegek_id' => 5,
-            ],
-            
-            [
-                'dolgozo_id' => 5,
-                'lehetosegek_id' => 4,
-            ],
-            
-            [
-                'dolgozo_id' => 6,
-                'lehetosegek_id' => 3,
-            ],
-            
-            [
-                'dolgozo_id' => 7,
-                'lehetosegek_id' => 5,
-            ],
-            
-            [
-                'dolgozo_id' => 8,
-                'lehetosegek_id' => 2,
-            ],
         ]);
     }
 }

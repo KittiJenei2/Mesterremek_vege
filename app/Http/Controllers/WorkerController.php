@@ -66,26 +66,22 @@ class WorkerController extends Controller
             ->where('dolgozo_id', $dolgozoId)
             ->firstOrFail();
 
-        // 1. Az aktuális foglalás elfogadása
         $foglalas->statuszok_id = 2; // Elfogadva
         $foglalas->save();
 
-        // 2. Ütköző, még függőben lévő foglalások megkeresése
         $utkozoFoglalasok = Idopontfoglalas::where('dolgozo_id', $dolgozoId)
             ->whereDate('datum', $foglalas->datum)
-            ->where('statuszok_id', 1) // Csak a "Függőben" lévőket vizsgáljuk
+            ->where('statuszok_id', 1)
             ->where('id', '!=', $foglalas->id)
             ->where(function ($query) use ($foglalas) {
-                // Átfedés vizsgálat: (Start1 < End2) AND (End1 > Start2)
                 $query->where('ido_kezdes', '<', $foglalas->ido_vege)
                       ->where('ido_vege', '>', $foglalas->ido_kezdes);
             })
             ->with(['felhasznalo', 'szolgaltatas'])
             ->get();
 
-        // 3. Ütközők elutasítása és e-mail küldés
         foreach ($utkozoFoglalasok as $utkozo) {
-            $utkozo->statuszok_id = 3; // Elutasítva (Betelt)
+            $utkozo->statuszok_id = 3; // Elutasítva
             $utkozo->save();
 
             try {
@@ -152,7 +148,6 @@ class WorkerController extends Controller
 
         $utkozoFoglalasok = $this->getConflictingAppointments($dolgozoId, $request->datum_kezdes, $request->datum_vege);
 
-        // Kétlépcsős folyamat: ha van ütközés ÉS még nincs 'force_save' jóváhagyás
         if ($utkozoFoglalasok->count() > 0 && !$request->has('force_save')) {
             return back()->with('vacation_conflicts', $utkozoFoglalasok)
                          ->with('pending_vacation', $request->all());
